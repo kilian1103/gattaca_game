@@ -33,7 +33,7 @@ Notes:
 - Compress for-loops that create new Datastructures with iterators or in-built methods for in-place modification
 
 ### Benchmarks
-- for N=10.000 iterations or early termination
+- for i=10.000 iterations or early termination
 - Benchmark = difference of after world_map loading and before final map printing
 - Local machine:
   - CPU’s: 12
