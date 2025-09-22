@@ -9,11 +9,19 @@ use lasso::{Rodeo, Spur};
 use num_cpus;
 
 fn main() {
-    // Assumptions: IF ants are stuck in a room with no exits, they stay there forever untl game ends
+    // Assumption: If an ant is stuck in a room with no exits, they stay there forever until game ends
+    // Assumption: Two or more ants in the same colony, destroy the colony and they all die
+    // Assumption: When an ant is stuck in a colony with no exits, it does count as a move to stay
+    // Assumption: World map is bidirectional
+    // Assumption: World map is well-formed (no self-loops, no duplicate directions in a colony)
+    // Assumption: There are only 4 possible directions: north, south, east, west
+    // Assumption: Colony names and directions are case-sensitive and contain no spaces and contain no number characters
+    
     let data_file_path = "./data/hiveum_map_small.txt";
     let N: usize = env::args().nth(1).expect("Please provide a valid ants size").parse().unwrap();
     println!("Num of ants to spawn: {}", N);
-    let num_cpus = num_cpus::get();
+    let num_cpus = num_cpus::get(); // get number of CPUs on this local machine
+    // can be set manually for testing purposes to decrease number of threads
     println!("Number of CPUs on this local machine: {}", num_cpus);
 
     let oppositeDirections: HashMap<&str, &str> = HashMap::from([
@@ -75,9 +83,9 @@ fn main() {
             break;
         }
     }
-    println!("Simulation ends.");
     let duration = start_time.elapsed();
-
+    println!("Simulation ends.");
+    
     println!("Remaining colonies....");
     let finalWorldMap = worldMap.read().unwrap();
     if finalWorldMap.is_empty() {
