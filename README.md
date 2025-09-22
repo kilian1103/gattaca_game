@@ -40,14 +40,14 @@ Notes:
   - Threads: 12
 
 - Medium,
-  - N=6000, 1600 miliseconds
-  - N=600, 200 milliseconds
-  - N=60, 200 miliseconds
+  - N=6000, 1600 miliseconds, (250 miliiseconds in --release mode)
+  - N=600, 200 milliseconds, (30 milliseconds in --release mode)
+  - N=60, 200 miliseconds, (70 milliseconds in --release mode)
 
 - Small:
-  - N=200, 1 milliseonds
-  - N=20, 20 milliseconds
-  - N=2, 1 mlliiescond
+  - N=200, 1 milliseonds, (1 milliseconds in --release mode)
+  - N=20, 20 milliseconds, (2 milliseconds in --release mode)
+  - N=2, 1 mlliiescond, (1 milliseconds in --release mode)
 
 
 
