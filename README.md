@@ -1,4 +1,5 @@
 ## Gattaca Challenge
+Note to examiner: Please ignore recent commits after [this hash](https://github.com/kilian1103/gattaca_game/tree/f3731c2280dce91a52d6630fe600994f38d6b27e). The following recent adjustments to the README are my personal note-taking and reflections on the challenge.
 
 Ant colony destruction simulation implemented in Rust with parallel ant movement and efficient string interning. The program loads a world map, spawns N ants across colonies, iteratively moves them, and destroys colonies when ants collide.
 
