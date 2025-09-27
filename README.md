@@ -116,3 +116,14 @@ Key crates used:
 
 - Missing N argument: provide an integer, e.g., `cargo run  100`.
 - Empty or malformed map lines are skipped; ensure `data/*.txt` follows the expected "direction=destination" format.
+
+
+### Improvements to consider when spending more time
+
+- Instead of recounting ant collisions, introduce a boolean flag that is set when an ant moves to a colony with another ant
+- Unit tests for core functions
+- Automated benchmark suites
+- Proper error handling for file I/O and parsing, unwraps etc.
+- Study the impact of total ants, chunk size and number of threads on performance
+  - Expecting that for a low number of ants, the overhead of threading is not worth it
+  - Expecting that for a high number of ants, the overhead of threading is worth it
