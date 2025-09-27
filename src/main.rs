@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, io};
+use std::ascii::escape_default;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
 use rand::prelude::{IndexedRandom, IteratorRandom};
@@ -17,7 +18,7 @@ fn main() {
     // Assumption: There are only 4 possible directions: north, south, east, west
     // Assumption: Colony names and directions are case-sensitive and contain no spaces and contain no number characters
     
-    let data_file_path = "./data/hiveum_map_small.txt";
+    let data_file_path = "./data/hiveum_map_medium.txt";
     let N: usize = env::args().nth(1).expect("Please provide a valid ants size").parse().unwrap();
     println!("Num of ants to spawn: {}", N);
     let num_cpus = num_cpus::get(); // get number of CPUs on this local machine
@@ -42,7 +43,7 @@ fn main() {
     print!("Building world map...");
     let (worldMap, interner) = build_map(data_file_path).unwrap();
     let worldMap = Arc::new(RwLock::new(worldMap)); // share worldMap across threads
-    let interner = Arc::new(RwLock::new(interner)); // share interner across threads
+    let interner = Arc::new(interner); // share interner across threads
 
     println!("Initializing ant positions...");
     let allColonies: Vec<Spur> = {
@@ -66,15 +67,13 @@ fn main() {
 
     println!("Starting simulation...");
     let start_time = Instant::now();
+    let chunk_size = (N / num_cpus).max(1);
     for i in 0..10_000 {
         // evolve ants - multi-threaded
-        let chunk_size = (N / num_cpus).max(1);
         move_ants(&mut antPos, &worldMap, chunk_size);
-
         // detect collision - single thread
         let mut worldMapWrite = worldMap.write().unwrap();
-        let mut interner_write = interner.write().unwrap();
-        detect_collision(&mut antPos, &mut worldMapWrite, &mut interner_write,
+        detect_collision(&mut antPos, &mut worldMapWrite, &interner,
                          &oppositeDirections);
 
         if antPos.is_empty() {
@@ -95,12 +94,11 @@ fn main() {
     } else {
         const DIRECTIONS_IN_ORDER: [&str; 4] = ["north", "south", "east", "west"];
         for (colony, exits) in finalWorldMap.iter() {
-            let mut interner_write = interner.write().unwrap();
-            print!("{} ", interner_write.resolve(colony));
+            print!("{} ", interner.resolve(colony));
             for &direction in DIRECTIONS_IN_ORDER.iter() {
-                let direction_key = interner_write.get_or_intern(direction);
+                let direction_key = interner.get(direction).unwrap();
                 if let Some(destination) = exits.get(&direction_key) {
-                    print!("{}={} ", direction, interner_write.resolve(destination));
+                    print!("{}={} ", direction, interner.resolve(destination));
                 }
             }
             println!();
@@ -128,7 +126,7 @@ fn move_ants(antPos: &mut Vec<(usize, Spur)>, worldMap: &Arc<RwLock<HashMap<Spur
     });
 }
 
-fn detect_collision(antPos: &mut Vec<(usize,Spur)>, worldMap: &mut HashMap<Spur, HashMap<Spur, Spur>>, interner: &mut Rodeo,
+fn detect_collision(antPos: &mut Vec<(usize,Spur)>, worldMap: &mut HashMap<Spur, HashMap<Spur, Spur>>, interner: &Rodeo,
                     oppositeDirections: &HashMap<&str, &str>){
 
     let mut collisionCounter: HashMap<Spur, Vec<usize>> = HashMap::new();
@@ -160,7 +158,7 @@ fn detect_collision(antPos: &mut Vec<(usize,Spur)>, worldMap: &mut HashMap<Spur,
         if let Some(exits) = worldMap.get(&doomed) {
             for (direction, destination) in exits.iter() {
                 if let Some(opposite) = oppositeDirections.get(interner.resolve(direction)) {
-                    let opposite_key = interner.get_or_intern(opposite);
+                    let opposite_key = interner.get(opposite).unwrap();
                     neighborsTunnelsToDelete.push((*destination, opposite_key));
                 }
             }

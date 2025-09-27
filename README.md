@@ -20,7 +20,7 @@ cargo run 1000
 Notes:
 
 - If you omit N, the program exits with: "Please provide a valid ants size".
-- The default map is `data/hiveum_map_small.txt`. To switch maps, edit `data_file_path` in `src/main.rs` (line 13).
+- The default map is `data/hiveum_map_small.txt`. To switch maps, edit `data_file_path` in `src/main.rs` (line 21).
 ### Main Optimizations from initial version
 
 - Use multithreading for evolving ants with world map (read-op)
