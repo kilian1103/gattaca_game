@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, io};
-use std::ascii::escape_default;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
 use rand::prelude::{IndexedRandom, IteratorRandom};
