@@ -121,6 +121,7 @@ Key crates used:
 ### Improvements to consider when spending more time
 
 - Instead of recounting ant collisions, introduce a boolean flag that is set when an ant moves to a colony with another ant
+- Inner HashMap can be replaced with a fixed size array of length 4 (north, south, east, west) for faster access
 - Unit tests for core functions
 - Automated benchmark suites
 - Proper error handling for file I/O and parsing, unwraps etc.
